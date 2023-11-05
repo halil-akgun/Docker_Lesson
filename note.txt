@@ -1,0 +1,17 @@
+    docker run -p 4000:4000 --link mongo-server:mongo-alias todo-app
+link kullaniyorsak kod icerisinde alias kullanilir
+    docker run -p 4000:4000 --network=my-network todo-app
+network kullaniyorsak kod icerisinde container_name kullanilir
+
+ornek:
+app.listen(PORT, async () => {
+    console.log(`Server is running... ${PORT} | Connecting to MongoDB...`);
+    await Mongoose.connect("mongodb://mongo-alias:27017/todos", { // link kullanilirsa
+    // await Mongoose.connect("mongodb://my-network:27017/todos", { // network kullanilirsa
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB successfully!");
+});
+
+
