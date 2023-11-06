@@ -8,6 +8,7 @@ app.listen(PORT, async () => {
     console.log(`Server is running... ${PORT} | Connecting to MongoDB...`);
     await Mongoose.connect("mongodb://mongo-alias:27017/todos", { // link kullanilirsa
     // await Mongoose.connect("mongodb://my-network:27017/todos", { // network kullanilirsa
+    // await Mongoose.connect("mongodb://mongodb:27017/todos", { // docker-compose.yml kullandigimizda yml dosyasindaki service adi yazilir
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
@@ -15,3 +16,44 @@ app.listen(PORT, async () => {
 });
 
 
+**********************************************************
+
+
+// docker-compose.yml:
+version: '3.4'
+services:
+  uploader-app:
+    container_name: my-file-uploader
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - uploader-app-uploads:/uploads
+volumes:
+  uploader-app-uploads:
+  
+uploader-app-uploads isminde bir volume olusturulur ve /uploads klasorune baglanir.
+container kapatildiginda volume'deki dosyalar silinmez.
+container tekrar calistirildiginda volume'deki dosyalar /uploads klasorune kopyalanir.
+/uploads klasorunde ekleme-cikarma oldugunda volume guncellenir.
+
+
+**********************************************************
+
+
+// docker-compose.yml:
+version: '3.4'
+services:
+  app1:
+    depends_on:
+      - db1
+      - db2
+  db1:
+  db2:
+volumes:
+  uploader-app-uploads:
+  
+'depends_on' -> db1 ve db2 calismadan app1 calismaz.
+
+
+**********************************************************
